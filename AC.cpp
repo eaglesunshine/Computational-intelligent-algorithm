@@ -1,12 +1,12 @@
-//¸Ã³ÌĞòÊÇÒÔÒÏÈºÏµÍ³ÎªÄ£ĞÍĞ´µÄÒÏÈºËã·¨³ÌĞò(Ç¿µ÷£º·ÇÂìÒÏÖÜÄ£ĞÍ)£¬ÒÔTSPÎÊÌâÎª²âÊÔ¶ÔÏó
+//è¯¥ç¨‹åºæ˜¯ä»¥èšç¾¤ç³»ç»Ÿä¸ºæ¨¡å‹å†™çš„èšç¾¤ç®—æ³•ç¨‹åº(å¼ºè°ƒï¼šéèš‚èšå‘¨æ¨¡å‹)ï¼Œä»¥TSPé—®é¢˜ä¸ºæµ‹è¯•å¯¹è±¡
 
 #include <iostream>
 #include <math.h>
 #include <time.h>
 using namespace std;
 
-#define N 75  //³ÇÊĞ½ÚµãÊıÄ¿
-//³ÇÊĞ×ø±ê
+#define N 75  //åŸå¸‚èŠ‚ç‚¹æ•°ç›®
+//åŸå¸‚åæ ‡
 double C[N][2]={
 {6,25}, {7,43}, {9,56}, {10,70}, {11,28},
 {12,17}, {12,38}, {15,5}, {15,14}, {15,56},
@@ -25,93 +25,93 @@ double C[N][2]={
 {65,27}, {66,14}, {66,8}, {67,41}, {70,64}
 };
 
-#define M 75	 //ÂìÒÏÊıÁ¿
-int NcMax =100;  //×î´óÑ­»·´ÎÊıNcMax
+#define M 75	 //èš‚èšæ•°é‡
+int NcMax =100;  //æœ€å¤§å¾ªç¯æ¬¡æ•°NcMax
 
 double alpha = 2, beta = 5, rou = 0.1, alpha1 = 0.1,  qzero = 0.1;
-//ĞÅÏ¢Æô·¢Òò×Ó£¬ÆÚÍûÆô·¢Ê½Òò×Ó£¬È«¾ÖĞÅÏ¢ËØ»Ó·¢²ÎÊı£¬¾Ö²¿ĞÅÏ¢ËØ»Ó·¢²ÎÊı, ×´Ì¬×ªÒÆ¹«Ê½ÖĞµÄq0
+//ä¿¡æ¯å¯å‘å› å­ï¼ŒæœŸæœ›å¯å‘å¼å› å­ï¼Œå…¨å±€ä¿¡æ¯ç´ æŒ¥å‘å‚æ•°ï¼Œå±€éƒ¨ä¿¡æ¯ç´ æŒ¥å‘å‚æ•°, çŠ¶æ€è½¬ç§»å…¬å¼ä¸­çš„q0
 
-double allDistance[N][N];	//¾ØÕó±íÊ¾Á½Á½³ÇÊĞÖ®¼äµÄ¾àÀë
-double Lnn;		//¾Ö²¿¸üĞÂÊ±ºòÊ¹ÓÃµÄµÄ³£Á¿£¬ËüÊÇÓÉ×î½üÁÚ·½·¨µÃµ½µÄÒ»¸ö³¤¶È
-//×î½üÁÚ·½·¨:¾ÍÊÇ´ÓÔ´½Úµã³ö·¢£¬Ã¿´ÎÑ¡ÔñÒ»¸ö¾àÀë×î¶ÌµÄµãÀ´±éÀúËùÓĞµÄ½ÚµãµÃµ½µÄÂ·¾¶£¬Ã¿¸ö½Úµã¶¼¿ÉÄÜ×÷ÎªÔ´½ÚµãÀ´±éÀú
+double allDistance[N][N];	//çŸ©é˜µè¡¨ç¤ºä¸¤ä¸¤åŸå¸‚ä¹‹é—´çš„è·ç¦»
+double Lnn;		//å±€éƒ¨æ›´æ–°æ—¶å€™ä½¿ç”¨çš„çš„å¸¸é‡ï¼Œå®ƒæ˜¯ç”±æœ€è¿‘é‚»æ–¹æ³•å¾—åˆ°çš„ä¸€ä¸ªé•¿åº¦
+//æœ€è¿‘é‚»æ–¹æ³•:å°±æ˜¯ä»æºèŠ‚ç‚¹å‡ºå‘ï¼Œæ¯æ¬¡é€‰æ‹©ä¸€ä¸ªè·ç¦»æœ€çŸ­çš„ç‚¹æ¥éå†æ‰€æœ‰çš„èŠ‚ç‚¹å¾—åˆ°çš„è·¯å¾„ï¼Œæ¯ä¸ªèŠ‚ç‚¹éƒ½å¯èƒ½ä½œä¸ºæºèŠ‚ç‚¹æ¥éå†
 
-int ChooseNextNode(int currentNode, int visitedNode[]);	  //Ñ¡ÔñÏÂÒ»¸ö½Úµã£¬ÅäºÏÏÂÃæµÄº¯ÊıÀ´¼ÆËãµÄ³¤¶È
-double CalAdjacentDistance(int node);	//¸øÒ»¸ö½ÚµãÓÉ×î½üÁÚ¾àÀë·½·¨¼ÆËã³¤¶ÈLnn
-double calculateDistance(int i, int j);	//¼ÆËãÁ½¸ö³ÇÊĞÖ®¼äµÄ¾àÀë
-void calculateAllDistance();	  //ÓÉ¾ØÕó±íÊ¾Á½Á½³ÇÊĞÖ®¼äµÄ¾àÀë
-double calculateSumOfDistance(int* tour);	//»ñµÃ¾­¹ın¸ö³ÇÊĞµÄÂ·¾¶³¤¶È
+int ChooseNextNode(int currentNode, int visitedNode[]);	  //é€‰æ‹©ä¸‹ä¸€ä¸ªèŠ‚ç‚¹ï¼Œé…åˆä¸‹é¢çš„å‡½æ•°æ¥è®¡ç®—çš„é•¿åº¦
+double CalAdjacentDistance(int node);	//ç»™ä¸€ä¸ªèŠ‚ç‚¹ç”±æœ€è¿‘é‚»è·ç¦»æ–¹æ³•è®¡ç®—é•¿åº¦Lnn
+double calculateDistance(int i, int j);	//è®¡ç®—ä¸¤ä¸ªåŸå¸‚ä¹‹é—´çš„è·ç¦»
+void calculateAllDistance();	  //ç”±çŸ©é˜µè¡¨ç¤ºä¸¤ä¸¤åŸå¸‚ä¹‹é—´çš„è·ç¦»
+double calculateSumOfDistance(int* tour);	//è·å¾—ç»è¿‡nä¸ªåŸå¸‚çš„è·¯å¾„é•¿åº¦
 
-class ACSAnt;   //ÂìÒÏ¸öÌå
+class ACSAnt;   //èš‚èšä¸ªä½“
 
-class AntColonySystem     //ÒÏÈºÏµÍ³
+class AntColonySystem     //èšç¾¤ç³»ç»Ÿ
 {
 private:
-	double info[N][N], visible[N][N];//½ÚµãÖ®¼äµÄĞÅÏ¢ËØÁ¿,½ÚµãÖ®¼äµÄÆô·¢Ê½ĞÅÏ¢Á¿
+	double info[N][N], visible[N][N];//èŠ‚ç‚¹ä¹‹é—´çš„ä¿¡æ¯ç´ é‡,èŠ‚ç‚¹ä¹‹é—´çš„å¯å‘å¼ä¿¡æ¯é‡
 public:
 	AntColonySystem()
 	{
 	}	
-	double Transition(int i, int j);	//¼ÆËãµ±Ç°½Úµãµ½ÏÂÒ»½Úµã×ªÒÆµÄ¸ÅÂÊ
-	void UpdateLocalPathRule(int i, int j);	//¾Ö²¿¸üĞÂ¹æÔò	
-	void InitParameter(double value);	//³õÊ¼»¯	
-	void UpdateGlobalPathRule(int* bestTour, int globalBestLength);	//È«¾ÖĞÅÏ¢ËØ¸üĞÂ
+	double Transition(int i, int j);	//è®¡ç®—å½“å‰èŠ‚ç‚¹åˆ°ä¸‹ä¸€èŠ‚ç‚¹è½¬ç§»çš„æ¦‚ç‡
+	void UpdateLocalPathRule(int i, int j);	//å±€éƒ¨æ›´æ–°è§„åˆ™	
+	void InitParameter(double value);	//åˆå§‹åŒ–	
+	void UpdateGlobalPathRule(int* bestTour, int globalBestLength);	//å…¨å±€ä¿¡æ¯ç´ æ›´æ–°
 };
 
-class ACSAnt                //ÂìÒÏ¸öÌå
+class ACSAnt                //èš‚èšä¸ªä½“
 {
 private:
-	AntColonySystem* antColony;   //ÒÏÈº
+	AntColonySystem* antColony;   //èšç¾¤
 protected:
-	int startCity, cururentCity;//³õÊ¼³ÇÊĞ±àºÅ£¬µ±Ç°³ÇÊĞ±àºÅ
-	int allowed[N];//½û¼É±í	
-	int Tour[N][2];//µ±Ç°Â·¾¶£¬ÊÇÒ»¸öÂ·¾¶¶Î£¬¼´£¨currentcity£¬nextcity£©£¬ÓÃ(Tour[i][0],Tour[i][1])±íÊ¾
-	int currentTourIndex;//µ±Ç°Â·¾¶Ë÷Òı£¬´Ó0¿ªÊ¼£¬´æ´¢ÂìÒÏ¾­¹ı³ÇÊĞµÄ±àºÅ
+	int startCity, cururentCity;//åˆå§‹åŸå¸‚ç¼–å·ï¼Œå½“å‰åŸå¸‚ç¼–å·
+	int allowed[N];//ç¦å¿Œè¡¨	
+	int Tour[N][2];//å½“å‰è·¯å¾„ï¼Œæ˜¯ä¸€ä¸ªè·¯å¾„æ®µï¼Œå³ï¼ˆcurrentcityï¼Œnextcityï¼‰ï¼Œç”¨(Tour[i][0],Tour[i][1])è¡¨ç¤º
+	int currentTourIndex;//å½“å‰è·¯å¾„ç´¢å¼•ï¼Œä»0å¼€å§‹ï¼Œå­˜å‚¨èš‚èšç»è¿‡åŸå¸‚çš„ç¼–å·
 public:
 	ACSAnt(AntColonySystem* acs, int start)
 	{
 		antColony = acs;
 		startCity = start;
 	}	
-	int* Search();	//¿ªÊ¼ËÑË÷	
-	int Choose();	//Ñ¡ÔñÏÂÒ»½Úµã	
-	void MoveToNextCity(int nextCity);	//ÒÆ¶¯µ½ÏÂÒ»½Úµã
+	int* Search();	//å¼€å§‹æœç´¢	
+	int Choose();	//é€‰æ‹©ä¸‹ä¸€èŠ‚ç‚¹	
+	void MoveToNextCity(int nextCity);	//ç§»åŠ¨åˆ°ä¸‹ä¸€èŠ‚ç‚¹
 };
 
 
 int main()
 {
-	time_t timer, timerl;   //time_t Êı¾İÀàĞÍ¾ÍÊÇÓÃÀ´´æ´¢´Ó1970Äêµ½ÏÖÔÚ¾­¹ıÁË¶àÉÙÃë
-	time(&timer);		//º¯Êıtime()µÄ·µ»ØÖµÈÔÈ»ÊÇ´Ó1970Äê1ÔÂ1ÈÕÖÁ½ñËù¾­ÀúµÄÊ±¼ä£¨ÒÔÃëÎªµ¥Î»£©
-						//·µ»ØÖµÍ¬Ê±Ò²¸³¸ø×÷Îª²ÎÊıµÄÖ¸Õë£¨p£©ËùÖ¸ÏòµÄÊµÌå
+	time_t timer, timerl;   //time_t æ•°æ®ç±»å‹å°±æ˜¯ç”¨æ¥å­˜å‚¨ä»1970å¹´åˆ°ç°åœ¨ç»è¿‡äº†å¤šå°‘ç§’
+	time(&timer);		//å‡½æ•°time()çš„è¿”å›å€¼ä»ç„¶æ˜¯ä»1970å¹´1æœˆ1æ—¥è‡³ä»Šæ‰€ç»å†çš„æ—¶é—´ï¼ˆä»¥ç§’ä¸ºå•ä½ï¼‰
+						//è¿”å›å€¼åŒæ—¶ä¹Ÿèµ‹ç»™ä½œä¸ºå‚æ•°çš„æŒ‡é’ˆï¼ˆpï¼‰æ‰€æŒ‡å‘çš„å®ä½“
 	unsigned long seed = timer;
 	seed %= 56000;
-	srand((unsigned int)seed);  //³õÊ¼»¯Ëæ»úÖÖ×Ó£¬±£Ö¤ºóÃæµÄrand£¨£©º¯Êı²úÉú²»Ò»ÑùµÄËæ»úÊı
+	srand((unsigned int)seed);  //åˆå§‹åŒ–éšæœºç§å­ï¼Œä¿è¯åé¢çš„randï¼ˆï¼‰å‡½æ•°äº§ç”Ÿä¸ä¸€æ ·çš„éšæœºæ•°
 								
-	calculateAllDistance();	//¼ÆËã±íÊ¾Á½Á½³ÇÊĞÖ®¼äµÄ¾àÀë
+	calculateAllDistance();	//è®¡ç®—è¡¨ç¤ºä¸¤ä¸¤åŸå¸‚ä¹‹é—´çš„è·ç¦»
 	
-	AntColonySystem* acs = new AntColonySystem();	//ÒÏÈºÏµÍ³¶ÔÏó
+	AntColonySystem* acs = new AntColonySystem();	//èšç¾¤ç³»ç»Ÿå¯¹è±¡
 	ACSAnt* ants[M];
-	for (int k = 0; k < M; k++)	//ÂìÒÏ¾ùÔÈ·Ö²¼ÔÚ³ÇÊĞÉÏ
+	for (int k = 0; k < M; k++)	//èš‚èšå‡åŒ€åˆ†å¸ƒåœ¨åŸå¸‚ä¸Š
 	{
 		ants[k] = new ACSAnt(acs, (int)(k%N));		 //M = N = 75
 	}
-	int node = rand() % N;	//Ëæ»úÑ¡ÔñÒ»¸ö½Úµã¼ÆËãÓÉ×î½üÁÚ·½·¨µÃµ½µÄÒ»¸ö³¤¶È
+	int node = rand() % N;	//éšæœºé€‰æ‹©ä¸€ä¸ªèŠ‚ç‚¹è®¡ç®—ç”±æœ€è¿‘é‚»æ–¹æ³•å¾—åˆ°çš„ä¸€ä¸ªé•¿åº¦
 	Lnn = CalAdjacentDistance(node);
-	double initInfo = 1 / (N * Lnn);	//¸÷ÌõÂ·¾¶ÉÏ³õÊ¼»¯µÄĞÅÏ¢ËØÇ¿¶È
-	acs->InitParameter(initInfo);	  //³õÊ¼»¯
+	double initInfo = 1 / (N * Lnn);	//å„æ¡è·¯å¾„ä¸Šåˆå§‹åŒ–çš„ä¿¡æ¯ç´ å¼ºåº¦
+	acs->InitParameter(initInfo);	  //åˆå§‹åŒ–
 									 
-	int globalTour[N][2];        //È«¾Ö×îÓÅÂ·¾¶£¬¾ÍÊÇÂ·¾¶ĞòÁĞ								
-	double globalBestLength = 0.0;	 //È«¾Ö×îÓÅ³¤¶È
-	for (int i = 0; i < NcMax; i++)    //NcMax×î´óÑ­»·´ÎÊı
+	int globalTour[N][2];        //å…¨å±€æœ€ä¼˜è·¯å¾„ï¼Œå°±æ˜¯è·¯å¾„åºåˆ—								
+	double globalBestLength = 0.0;	 //å…¨å±€æœ€ä¼˜é•¿åº¦
+	for (int i = 0; i < NcMax; i++)    //NcMaxæœ€å¤§å¾ªç¯æ¬¡æ•°
 	{	
-		int localTour[N][2];	//¾Ö²¿×îÓÅÂ·¾¶	
-		double localBestLength = 0.0;	//¾Ö²¿×îÓÅ³¤¶È	
-		double tourLength;	//µ±Ç°Â·¾¶³¤¶È
+		int localTour[N][2];	//å±€éƒ¨æœ€ä¼˜è·¯å¾„	
+		double localBestLength = 0.0;	//å±€éƒ¨æœ€ä¼˜é•¿åº¦	
+		double tourLength;	//å½“å‰è·¯å¾„é•¿åº¦
 		for (int j = 0; j < M; j++)
 		{
 			int* tourPath = ants[j]->Search();
 			tourLength = calculateSumOfDistance(tourPath);
-			//¾Ö²¿±È½Ï£¬²¢¼ÇÂ¼Â·¾¶ºÍ³¤¶È
+			//å±€éƒ¨æ¯”è¾ƒï¼Œå¹¶è®°å½•è·¯å¾„å’Œé•¿åº¦
 			if (tourLength < localBestLength || abs(localBestLength - 0.0) < 0.000001)
 			{
 				for (int m = 0; m< N; m++)
@@ -125,7 +125,7 @@ int main()
 			}
 		}
 
-		//È«¾Ö±È½Ï£¬²¢¼ÇÂ¼Â·¾¶ºÍ³¤¶È
+		//å…¨å±€æ¯”è¾ƒï¼Œå¹¶è®°å½•è·¯å¾„å’Œé•¿åº¦
 		if (localBestLength < globalBestLength || abs(globalBestLength - 0.0) < 0.000001)
 		{
 			for (int m = 0; m< N; m++)
@@ -136,8 +136,8 @@ int main()
 			globalBestLength = localBestLength;
 		}
 		acs->UpdateGlobalPathRule(*globalTour, globalBestLength);
-		//Êä³öËùÓĞÂìÒÏÑ­»·Ò»´ÎºóµÄµü´ú×îÓÅÂ·¾¶
-		cout << "µÚ " << i + 1 << " µü´ú×îÓÅÂ·¾¶:" << localBestLength << "	  " << endl;
+		//è¾“å‡ºæ‰€æœ‰èš‚èšå¾ªç¯ä¸€æ¬¡åçš„è¿­ä»£æœ€ä¼˜è·¯å¾„
+		cout << "ç¬¬ " << i + 1 << " è¿­ä»£æœ€ä¼˜è·¯å¾„:" << localBestLength << "	  " << endl;
 		for (int m = 0; m< N; m++)
 		{
 			cout << localTour[m][0] << "	";
@@ -145,9 +145,9 @@ int main()
 		cout << endl;
 	}
 
-	//Êä³öÈ«¾Ö×îÓÅÂ·¾¶
-	cout << "È«¾Ö×îÓÅÂ·¾¶³¤¶È:" << globalBestLength << endl;
-	cout << "È«¾Ö×îÓÅÂ·¾¶:";
+	//è¾“å‡ºå…¨å±€æœ€ä¼˜è·¯å¾„
+	cout << "å…¨å±€æœ€ä¼˜è·¯å¾„é•¿åº¦:" << globalBestLength << endl;
+	cout << "å…¨å±€æœ€ä¼˜è·¯å¾„:";
 	for (int m = 0; m< N; m++)
 	{
 		cout << globalTour[m][0] << "	";
@@ -157,12 +157,12 @@ int main()
 	return 0;
 }
 
-//¼ÆËãµ±Ç°½Úµãµ½ÏÂÒ»½Úµã×ªÒÆµÄ¸ÅÂÊ
+//è®¡ç®—å½“å‰èŠ‚ç‚¹åˆ°ä¸‹ä¸€èŠ‚ç‚¹è½¬ç§»çš„æ¦‚ç‡
 double AntColonySystem::Transition(int i, int j)
 {
 	if (i != j)
 	{
-		return (pow(info[i][j], alpha) * pow(visible[i][j], beta));  //²ÉÓÃµÄ5.1µÄ¸ÅÂÊ¼ÆËã¹«Ê½
+		return (pow(info[i][j], alpha) * pow(visible[i][j], beta));  //é‡‡ç”¨çš„5.1çš„æ¦‚ç‡è®¡ç®—å…¬å¼
 	}
 	else
 	{
@@ -170,33 +170,33 @@ double AntColonySystem::Transition(int i, int j)
 	}
 }
 
-//¾Ö²¿¸üĞÂ¹æÔò
+//å±€éƒ¨æ›´æ–°è§„åˆ™
 void AntColonySystem::UpdateLocalPathRule(int i, int j)
 {
 	info[i][j] = (1.0 - alpha1) * info[i][j] + alpha1 * (1.0 / (N * Lnn));
 	info[j][i] = info[i][j];
 }
 
-//³õÊ¼»¯
+//åˆå§‹åŒ–
 void AntColonySystem::InitParameter(double value)
 {
-	//³õÊ¼»¯Â·¾¶ÉÏµÄĞÅÏ¢ËØÇ¿¶Ètao0
+	//åˆå§‹åŒ–è·¯å¾„ä¸Šçš„ä¿¡æ¯ç´ å¼ºåº¦tao0
 	for (int i = 0; i < N; i++)
 	{
 		for (int j = 0; j < N; j++)
 		{
-			info[i][j] = value;   //ĞÅÏ¢ËØÇ¿¶È
+			info[i][j] = value;   //ä¿¡æ¯ç´ å¼ºåº¦
 			info[j][i] = value;
 			if (i != j)
 			{
-				visible[i][j] = 1.0 / allDistance[i][j];   //Æô·¢Ê½ĞÅÏ¢Ç¿¶È
+				visible[i][j] = 1.0 / allDistance[i][j];   //å¯å‘å¼ä¿¡æ¯å¼ºåº¦
 				visible[j][i] = visible[i][j];
 			}
 		}
 	}
 }
 
-//È«¾ÖĞÅÏ¢ËØ¸üĞÂ
+//å…¨å±€ä¿¡æ¯ç´ æ›´æ–°
 void AntColonySystem::UpdateGlobalPathRule(int* bestTour, int globalBestLength)
 {
 	for (int i = 0; i < N; i++)
@@ -208,14 +208,14 @@ void AntColonySystem::UpdateGlobalPathRule(int* bestTour, int globalBestLength)
 	}
 }
 
-//Ñ¡ÔñÏÂÒ»¸ö½Úµã£¬ÅäºÏÏÂÃæµÄº¯ÊıÀ´¼ÆËãµÄ³¤¶È
+//é€‰æ‹©ä¸‹ä¸€ä¸ªèŠ‚ç‚¹ï¼Œé…åˆä¸‹é¢çš„å‡½æ•°æ¥è®¡ç®—çš„é•¿åº¦
 int ChooseNextNode(int currentNode, int visitedNode[])
 {
 	int nextNode = -1;
 	double shortDistance = 0.0;
 	for (int i = 0; i < N; i++)
 	{
-		//È¥µôÒÑ×ß¹ıµÄ½Úµã,´ÓÊ£ÏÂ½ÚµãÖĞÑ¡Ôñ¾àÀë×î½üµÄ½Úµã
+		//å»æ‰å·²èµ°è¿‡çš„èŠ‚ç‚¹,ä»å‰©ä¸‹èŠ‚ç‚¹ä¸­é€‰æ‹©è·ç¦»æœ€è¿‘çš„èŠ‚ç‚¹
 		if (1 == visitedNode[i])
 		{
 			if (shortDistance == 0.0)
@@ -232,7 +232,7 @@ int ChooseNextNode(int currentNode, int visitedNode[])
 	return nextNode;
 }
 
-//¸øÒ»¸ö½ÚµãÓÉ×î½üÁÚ¾àÀë·½·¨¼ÆËã³¤¶È
+//ç»™ä¸€ä¸ªèŠ‚ç‚¹ç”±æœ€è¿‘é‚»è·ç¦»æ–¹æ³•è®¡ç®—é•¿åº¦
 double CalAdjacentDistance(int node)
 {
 	double sum = 0.0;
@@ -249,7 +249,7 @@ double CalAdjacentDistance(int node)
 		nextNode = ChooseNextNode(currentNode, visitedNode);
 		if (nextNode >= 0)
 		{
-			sum += allDistance[currentNode][nextNode];  //allDistanceÎªÁ½³ÇÊĞ¼äµÄ¾àÀë¾ØÕó
+			sum += allDistance[currentNode][nextNode];  //allDistanceä¸ºä¸¤åŸå¸‚é—´çš„è·ç¦»çŸ©é˜µ
 			currentNode = nextNode;
 			visitedNode[currentNode] = 0;
 		}
@@ -259,61 +259,61 @@ double CalAdjacentDistance(int node)
 }
 
 
-//¿ªÊ¼ËÑË÷
+//å¼€å§‹æœç´¢
 int* ACSAnt::Search()
 {
 	cururentCity = startCity;
 	int toCity;
-	currentTourIndex = 0;        //µ±Ç°Â·¾¶Ë÷Òı£¬´æ´¢ÂìÒÏ¾­¹ı³ÇÊĞµÄ±àºÅ
+	currentTourIndex = 0;        //å½“å‰è·¯å¾„ç´¢å¼•ï¼Œå­˜å‚¨èš‚èšç»è¿‡åŸå¸‚çš„ç¼–å·
 	for (int i = 0; i < N; i++)
 	{
-		allowed[i] = 1;          //½û¼É±í
+		allowed[i] = 1;          //ç¦å¿Œè¡¨
 	}
-	allowed[cururentCity] = 0;	//cururentCityÎªµ±Ç°³ÇÊĞ±àºÅ
+	allowed[cururentCity] = 0;	//cururentCityä¸ºå½“å‰åŸå¸‚ç¼–å·
 	int endCity;
 	int count = 0;
 	do
 	{
 		count++;
 		endCity = cururentCity;
-		toCity = Choose();	     //Ñ¡ÔñÏÂÒ»¸ö½Úµã	
+		toCity = Choose();	     //é€‰æ‹©ä¸‹ä¸€ä¸ªèŠ‚ç‚¹	
 		if (toCity >= 0)
 		{
-			MoveToNextCity(toCity);    //ÒÆ¶¯µ½ÏÂÒ»¸ö½Úµã
-			antColony->UpdateLocalPathRule(endCity, toCity);  //½øĞĞ¾Ö²¿¸üĞÂ
+			MoveToNextCity(toCity);    //ç§»åŠ¨åˆ°ä¸‹ä¸€ä¸ªèŠ‚ç‚¹
+			antColony->UpdateLocalPathRule(endCity, toCity);  //è¿›è¡Œå±€éƒ¨æ›´æ–°
 			cururentCity = toCity;
 		}
 	} while (toCity >= 0);
 	MoveToNextCity(startCity);
 	antColony->UpdateLocalPathRule(endCity, startCity);
 
-	return *Tour;  //TourÊÇÒ»¸ö¶şÎ¬Êı×é£¬Tour±íÊ¾Ê×ÔªËØµØÖ·µÄµØÖ·
+	return *Tour;  //Touræ˜¯ä¸€ä¸ªäºŒç»´æ•°ç»„ï¼ŒTourè¡¨ç¤ºé¦–å…ƒç´ åœ°å€çš„åœ°å€
 	/*
-	tourPathÎªÖ¸ÏòintÊıµÄÖ¸Õë£¬Ïàµ±ÓÚÒ»Î¬Êı×étourpath[]£»
-	tourpath=*Tour£¬¼´½«¶şÎ¬Êı×éTourÊ×ÔªËØµØÖ·¸øtourpath£»
-	ËùÒÔtourpath[0]=TourÊ×ÔªËØ£»
+	tourPathä¸ºæŒ‡å‘intæ•°çš„æŒ‡é’ˆï¼Œç›¸å½“äºä¸€ç»´æ•°ç»„tourpath[]ï¼›
+	tourpath=*Tourï¼Œå³å°†äºŒç»´æ•°ç»„Touré¦–å…ƒç´ åœ°å€ç»™tourpathï¼›
+	æ‰€ä»¥tourpath[0]=Touré¦–å…ƒç´ ï¼›
 	tourpath[]={Tour[0][0],Tour[0][1],Tour[1][0],Tour[1][1],...Tour[74][0],Tour[74][1]}
-	tourpathÏÂ±ê£º   0			1			2		3				148			149
-	¶ÔÓ¦Â·¾¶ĞòÁĞ£ºµÚ1¶ÎÂ·¾¶:£¨*£¨tourpath£©£¬*£¨tourpath+1£©£©
+	tourpathä¸‹æ ‡ï¼š   0			1			2		3				148			149
+	å¯¹åº”è·¯å¾„åºåˆ—ï¼šç¬¬1æ®µè·¯å¾„:ï¼ˆ*ï¼ˆtourpathï¼‰ï¼Œ*ï¼ˆtourpath+1ï¼‰ï¼‰
 				 ...
-				 µÚi¶ÎÂ·¾¶£º£¨*£¨tourpath+2*£¨i-1£©£©£¬*£¨tourpath+2*£¨i-1£©+1£©£©
+				 ç¬¬iæ®µè·¯å¾„ï¼šï¼ˆ*ï¼ˆtourpath+2*ï¼ˆi-1ï¼‰ï¼‰ï¼Œ*ï¼ˆtourpath+2*ï¼ˆi-1ï¼‰+1ï¼‰ï¼‰
 	*/
 }
 
-//Ñ¡ÔñÏÂÒ»½Úµã
+//é€‰æ‹©ä¸‹ä¸€èŠ‚ç‚¹
 int ACSAnt::Choose()
 {
 	int nextCity = -1;
-	double q = rand() / (double)RAND_MAX;    //²úÉúÒ»¸ö0~1Ö®¼äµÄËæ»úÊıq												 
-	if (q <= qzero)	//Èç¹û q <= q0,°´ÏÈÑéÖªÊ¶£¬·ñÔòÔò°´¸ÅÂÊ×ªÒÆ
+	double q = rand() / (double)RAND_MAX;    //äº§ç”Ÿä¸€ä¸ª0~1ä¹‹é—´çš„éšæœºæ•°q												 
+	if (q <= qzero)	//å¦‚æœ q <= q0,æŒ‰å…ˆéªŒçŸ¥è¯†ï¼Œå¦åˆ™åˆ™æŒ‰æ¦‚ç‡è½¬ç§»
 	{
-		double probability = -1.0;//×ªÒÆµ½ÏÂÒ»½ÚµãµÄ¸ÅÂÊ
+		double probability = -1.0;//è½¬ç§»åˆ°ä¸‹ä¸€èŠ‚ç‚¹çš„æ¦‚ç‡
 		for (int i = 0; i < N; i++)
 		{
-			//È¥µô½û¼É±íÖĞÒÑ×ß¹ıµÄ½Úµã,´ÓÊ£ÏÂ½ÚµãÖĞÑ¡Ôñ×î´ó¸ÅÂÊµÄ¿ÉĞĞ½Úµã
+			//å»æ‰ç¦å¿Œè¡¨ä¸­å·²èµ°è¿‡çš„èŠ‚ç‚¹,ä»å‰©ä¸‹èŠ‚ç‚¹ä¸­é€‰æ‹©æœ€å¤§æ¦‚ç‡çš„å¯è¡ŒèŠ‚ç‚¹
 			if (1 == allowed[i])
 			{
-				double prob = antColony->Transition(cururentCity, i);  //¼ÆËãµ±Ç°½Úµã×ªÒÆµ½ÏÂÒ»½ÚµãµÄ¸ÅÂÊ
+				double prob = antColony->Transition(cururentCity, i);  //è®¡ç®—å½“å‰èŠ‚ç‚¹è½¬ç§»åˆ°ä¸‹ä¸€èŠ‚ç‚¹çš„æ¦‚ç‡
 				if (prob  > probability)
 				{
 					nextCity = i;
@@ -324,11 +324,11 @@ int ACSAnt::Choose()
 	}
 	else
 	{
-		//°´¸ÅÂÊ×ªÒÆ			
-		double p = rand() / (double)RAND_MAX;	//Éú³ÉÒ»¸öËæ»úÊı,ÓÃÀ´ÅĞ¶ÏÂäÔÚÄÄ¸öÇø¼ä¶Î
+		//æŒ‰æ¦‚ç‡è½¬ç§»			
+		double p = rand() / (double)RAND_MAX;	//ç”Ÿæˆä¸€ä¸ªéšæœºæ•°,ç”¨æ¥åˆ¤æ–­è½åœ¨å“ªä¸ªåŒºé—´æ®µ
 		double sum = 0.0;
-		double probability = 0.0;	//¸ÅÂÊµÄÇø¼äµã£¬p ÂäÔÚÄÄ¸öÇø¼ä¶Î£¬Ôò¸ÃµãÊÇ×ªÒÆµÄ·½Ïò										
-		for (int i = 0; i < N; i++)	//¼ÆËã¸ÅÂÊ¹«Ê½µÄ·ÖÄ¸µÄÖµ
+		double probability = 0.0;	//æ¦‚ç‡çš„åŒºé—´ç‚¹ï¼Œp è½åœ¨å“ªä¸ªåŒºé—´æ®µï¼Œåˆ™è¯¥ç‚¹æ˜¯è½¬ç§»çš„æ–¹å‘										
+		for (int i = 0; i < N; i++)	//è®¡ç®—æ¦‚ç‡å…¬å¼çš„åˆ†æ¯çš„å€¼
 		{
 			if (1 == allowed[i])
 			{
@@ -339,7 +339,7 @@ int ACSAnt::Choose()
 		{
 			if (1 == allowed[j] && sum > 0)
 			{
-				probability += antColony->Transition(cururentCity, j) / sum; //Íù³ÇÊĞj×ªÒÆµÄ¸ÅÂÊ
+				probability += antColony->Transition(cururentCity, j) / sum; //å¾€åŸå¸‚jè½¬ç§»çš„æ¦‚ç‡
 				if (probability >= p || (p > 0.9999 && probability > 0.9999))
 				{
 					nextCity = j;
@@ -351,24 +351,24 @@ int ACSAnt::Choose()
 	return nextCity;
 }
 
-//ÒÆ¶¯µ½ÏÂÒ»½Úµã
+//ç§»åŠ¨åˆ°ä¸‹ä¸€èŠ‚ç‚¹
 void ACSAnt::MoveToNextCity(int nextCity)
 {
-	allowed[nextCity] = 0;    //½û¼É±í
-	Tour[currentTourIndex][0] = cururentCity;	//µ±Ç°Â·¾¶
+	allowed[nextCity] = 0;    //ç¦å¿Œè¡¨
+	Tour[currentTourIndex][0] = cururentCity;	//å½“å‰è·¯å¾„
 	Tour[currentTourIndex][1] = nextCity;
 	currentTourIndex++;
 	cururentCity = nextCity;
 }
 
 
-//¼ÆËãÁ½¸ö³ÇÊĞÖ®¼äµÄ¾àÀë
+//è®¡ç®—ä¸¤ä¸ªåŸå¸‚ä¹‹é—´çš„è·ç¦»
 double calculateDistance(int i, int j)
 {
 	return sqrt(pow((C[i][0]-C[j][0]),2.0) + pow((C[i][1]-C[j][1]),2.0));
 }
-
-//ÓÉ¾ØÕó±íÊ¾Á½Á½³ÇÊĞÖ®¼äµÄ¾àÀë
+ 
+//ç”±çŸ©é˜µè¡¨ç¤ºä¸¤ä¸¤åŸå¸‚ä¹‹é—´çš„è·ç¦»
 void calculateAllDistance()
 {
 	for(int i = 0; i < N; i++)
@@ -384,7 +384,7 @@ void calculateAllDistance()
 	}
 }
 
-//»ñµÃ¾­¹ın¸ö³ÇÊĞµÄÂ·¾¶³¤¶È  
+//è·å¾—ç»è¿‡nä¸ªåŸå¸‚çš„è·¯å¾„é•¿åº¦  
 double calculateSumOfDistance(int* tour)
 {
 	double sum = 0;
